@@ -1,10 +1,10 @@
 dataset: "TDIL"
 
 path:
-  corpus_path: "/mnt/e/tts/recordings/tdil/"
+  corpus_path: "/content/TDIL-data/recordings/tdil/"
   lexicon_path: "TODO"
-  raw_path: "/mnt/e/tts/recordings/raw_data/TDIL"
-  preprocessed_path: "/mnt/e/tts/recordings/preprocessed_data/TDIL"
+  raw_path: "/content/TDIL-data/raw_data/TDIL"
+  preprocessed_path: "/content/TDIL-data/preprocessed_data/TDIL"
 
 preprocessing:
   val_size: 512
