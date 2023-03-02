@@ -34,4 +34,4 @@ max_seq_len: 1000
 
 vocoder:
   model: "MelGAN" # support 'HiFi-GAN', 'MelGAN'
-  speaker: "TDIL" # support  'LJSpeech', 'universal'
+  speaker: "universal" # support  'LJSpeech', 'universal'
