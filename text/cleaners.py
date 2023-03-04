@@ -17,6 +17,7 @@ hyperparameter. Some cleaners are English-specific. You'll typically want to use
 import re
 from unidecode import unidecode
 from .numbers import normalize_numbers
+from indic import _ipa_to_sampa
 _whitespace_re = re.compile(r'\s+')
 
 # List of (regular expression, replacement) pairs for abbreviations:
@@ -69,6 +70,16 @@ def basic_cleaners(text):
     text = lowercase(text)
     text = collapse_whitespace(text)
     return text
+    
+def indic_cleaners(text):
+    '''Indic cleaner to convert IPA to SAMPA'''
+    text_out = ""
+    for char in text:
+        if char in indic.valid_symbols:
+            text_out = text_out + "@" + _ipa_to_sampa[char]
+        else:
+            text_out = text_out + char
+    return text_out
 
 
 def transliteration_cleaners(text):
