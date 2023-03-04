@@ -1,18 +1,25 @@
 cons = [
-    "p",
-    "tB",
-    "tr",
     "k",
     "c",
-    "m",
-    "nB",
+    "tr",
+    "tB",
+    "p",
+    "N",
+    "n~",
+    "n",
     "nr",
+    "nB",
+    "m",
+    "j",
     "9r",
-    "v",
     "l",
+    "v",
+    "sr",
+    "s",
+    "hv",
     "zr",
-    "lr",
-    "j"
+    "rr",
+    "lr"
 ]
 vow = [
     "i",
@@ -32,23 +39,32 @@ long_vow = [
     "A"
 ]
 
-valid_symbols = cons + vow + long_vow
+indic_valid_symbols = cons + vow + long_vow
 
 _ipa_to_sampa = {
     "p":"p",
     "t̪":"tB",
+    "t̪":"tB",
     "ʈ":"tr",
     "k":"k",
     "tʃ":"c",
+    "t͡ʃ":"c",
     "m":"m",
-    "n":"nB",
+    "n":"n",
+    "n̪":"nB",
     "ɳ":"nr",
+    "ŋ":"N",
+    "ɲ":"n~",
     "ɾ":"9r",
+    "r":"rr",
     "ʋ":"v",
     "l":"l",
+    "ʂ":"sr",
+    "s":"s",
     "ɻ":"zr",
     "ɭ":"lr",
     "j":"j",
+    "h":"hv",
     "i":"i",
     "u":"u",
     "e":"e",
@@ -59,6 +75,11 @@ _ipa_to_sampa = {
     "e:":"E",
     "o:":"O",
     "a:":"A",
+    "iː":"I",
+    "uː":"U",
+    "eː":"E",
+    "oː":"O",
+    "aː":"A",
     "aɪ":"aI",
     "aʊ":"aU",
 }

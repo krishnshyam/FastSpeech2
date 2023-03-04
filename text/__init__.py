@@ -34,8 +34,12 @@ def text_to_sequence(text, cleaner_names):
         if not m:
             sequence += _symbols_to_sequence(_clean_text(text, cleaner_names))
             break
-        sequence += _symbols_to_sequence(_clean_text(m.group(1), cleaner_names))
-        sequence += _arpabet_to_sequence(m.group(2))
+        cleaning_text = m.group(0)[1:-1]
+        # print("cleaning text: " + cleaning_text)
+        sequence += _arpabet_to_sequence(_clean_text(cleaning_text, cleaner_names))
+        
+        # sequence += _symbols_to_sequence(_clean_text(m.group(0), cleaner_names))
+        # sequence += _arpabet_to_sequence(m.group(2))
         text = m.group(3)
 
     return sequence
@@ -64,10 +68,21 @@ def _clean_text(text, cleaner_names):
 
 
 def _symbols_to_sequence(symbols):
+    # print("symbols2seq:")
+    # print(symbols)
+    # print([s for s in symbols if _should_keep_symbol(s)])
+    # print("to:")
+    # print([_symbol_to_id[s] for s in symbols if _should_keep_symbol(s)])
     return [_symbol_to_id[s] for s in symbols if _should_keep_symbol(s)]
 
 
 def _arpabet_to_sequence(text):
+    # print("_arpabet_to_sequence:")
+    # print(text)
+    # print(["@" + s for s in text.split()])
+    # print("to:")
+    # print(_symbols_to_sequence(["@" + s for s in text.split()]))
+    
     return _symbols_to_sequence(["@" + s for s in text.split()])
 
 
