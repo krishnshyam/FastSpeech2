@@ -1,10 +1,10 @@
 dataset: "TDIL"
 
 path:
-  corpus_path: "/content/TDIL-data/recordings/tdil/"
+  corpus_path: "/kaggle/input/tam-tdil/recordings/tdil/"
   lexicon_path: "TODO"
-  raw_path: "/content/TDIL-data/raw_data/TDIL"
-  preprocessed_path: "/content/TDIL-data/preprocessed_data/TDIL"
+  raw_path: "/kaggle/input/tam-tdil/raw_data/TDIL"
+  preprocessed_path: "/kaggle/input/tam-tdil/preprocessed_data/TDIL"
 
 preprocessing:
   val_size: 512
