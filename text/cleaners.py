@@ -73,16 +73,17 @@ def basic_cleaners(text):
     
 def indic_cleaners(text):
     '''Indic cleaner to convert IPA to SAMPA'''
-    print("cleaning: " + text)
+    #print("cleaning: " + text)
     text_out = ""
     for char in text.split():
         if char in _ipa_to_sampa.keys():
             text_out = text_out + " " + _ipa_to_sampa[char]
         elif char == "spn":
+            print("OOV: " + text)
             text_out = text_out + " " + char
         else:
             print("indic_cleaners: unknown char \'" + char + "\'")
-    print("cleaned: " + text_out)
+    #print("cleaned: " + text_out)
     return text_out
 
 
