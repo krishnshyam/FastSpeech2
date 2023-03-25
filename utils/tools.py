@@ -201,14 +201,20 @@ def synth_samples(targets, predictions, vocoder, model_config, preprocess_config
 
     mel_predictions = predictions[1].transpose(1, 2)
     lengths = predictions[9] * preprocess_config["preprocessing"]["stft"]["hop_length"]
-    wav_predictions = vocoder_infer(
-        mel_predictions, vocoder, model_config, preprocess_config, lengths=lengths
-    )
+    if vocoder is not None:
+        wav_predictions = vocoder_infer(
+            mel_predictions, vocoder, model_config, preprocess_config, lengths=lengths
+        )
 
-    sampling_rate = preprocess_config["preprocessing"]["audio"]["sampling_rate"]
-    for wav, basename in zip(wav_predictions, basenames):
-        wavfile.write(os.path.join(path, "{}.wav".format(basename)), sampling_rate, wav)
-
+        sampling_rate = preprocess_config["preprocessing"]["audio"]["sampling_rate"]
+        for wav, basename in zip(wav_predictions, basenames):
+            wavfile.write(os.path.join(path, "{}.wav".format(basename)), sampling_rate, wav)
+    else:
+        mel_filename = "{}-mel.npy".format(basename)
+        np.save(
+            os.path.join(self.out_dir, mel_filename),
+            mel_predictions.T.cpu().numpy()[:,:,0],
+        )
 
 def plot_mel(data, stats, titles):
     fig, axes = plt.subplots(len(data), 1, squeeze=False)

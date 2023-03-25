@@ -13,6 +13,7 @@ from utils.model import get_model, get_vocoder
 from utils.tools import to_device, synth_samples
 from dataset import TextDataset
 from text import text_to_sequence
+from text.indic import tam_g2p
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -80,6 +81,23 @@ def preprocess_mandarin(text, preprocess_config):
             phones, preprocess_config["preprocessing"]["text"]["text_cleaners"]
         )
     )
+
+    return np.array(sequence)
+
+
+def preprocess_indic(text, preprocess_config):
+
+    phones = []
+    phones = tam_g2p(text)
+    phones = "{" + phones + "}"
+    print("Raw Text Sequence: {}".format(text))
+    print("Phoneme Sequence: {}".format(phones))
+    sequence = np.array(
+        text_to_sequence(
+            phones, preprocess_config["preprocessing"]["text"]["text_cleaners"]
+        )
+    )
+    print("Cleaned Sequence: {}".format(str(sequence)))
 
     return np.array(sequence)
 
@@ -206,6 +224,9 @@ if __name__ == "__main__":
             texts = np.array([preprocess_english(args.text, preprocess_config)])
         elif preprocess_config["preprocessing"]["text"]["language"] == "zh":
             texts = np.array([preprocess_mandarin(args.text, preprocess_config)])
+        elif preprocess_config["preprocessing"]["text"]["language"] == "ta":
+            texts = np.array([preprocess_indic(args.text, preprocess_config)])
+            vocoder = None
         text_lens = np.array([len(texts[0])])
         batchs = [(ids, raw_texts, speakers, texts, text_lens, max(text_lens))]
 
