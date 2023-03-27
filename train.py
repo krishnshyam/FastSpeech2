@@ -71,6 +71,8 @@ def main(args, configs):
     outer_bar = tqdm(total=total_step, desc="Training", position=0)
     outer_bar.n = args.restore_step
     outer_bar.update()
+    best_step = 0
+    best_loss = 0
 
     while True:
         inner_bar = tqdm(total=len(loader), desc="Epoch {}".format(epoch), position=1)
@@ -156,10 +158,70 @@ def main(args, configs):
                         },
                         os.path.join(
                             train_config["path"]["ckpt_path"],
-                            "{}.pth.tar".format(step),
+                            "{}_latest.pth.tar".format(step),
                         ),
                     )
-
+                    
+                    # retaining latest 2 chkpts because torch.save seems to be 
+                    # async, unlike chpt delete, leaving us for a time w no prev
+                    # checkpt, which is scary 
+                    prev_save_step = step - 2*save_step
+                    
+                    prev_chkpt_path = os.path.join(
+                                        train_config["path"]["ckpt_path"],
+                                        "{}_latest.pth.tar".format(prev_save_step),
+                                        )
+                                        
+                    if os.path.isfile(prev_chkpt_path):
+                        print("Deleting prev chkpt: " + 
+                            "{}_latest.pth.tar".format(prev_save_step))
+                        os.remove(prev_chkpt_path)
+                        
+                    # save best model, if applicable. we use only mel loss
+                    # note we don't persist best value across restored sessions
+                    # also note that while resuming sessions, the suffix needs 
+                    # to be removed i.e., without _latest or _best, and the
+                    # chkpt needs to be bare step no.
+                    
+                    if best_step == 0:  # there has been no best step this run
+                        best_step = step
+                        best_loss = losses[1]
+                        torch.save(
+                            {
+                                "model": model.module.state_dict(),
+                                "optimizer": optimizer._optimizer.state_dict(),
+                            },
+                            os.path.join(
+                                train_config["path"]["ckpt_path"],
+                                "{}_best.pth.tar".format(step),
+                            ),
+                        )
+                        
+                    elif losses[1] <= best_loss:    # there is an improvement
+                        old_best_step = best_step
+                        best_step = step
+                        best_loss = losses[1]
+                        torch.save(
+                            {
+                                "model": model.module.state_dict(),
+                                "optimizer": optimizer._optimizer.state_dict(),
+                            },
+                            os.path.join(
+                                train_config["path"]["ckpt_path"],
+                                "{}_best.pth.tar".format(step),
+                            ),
+                        )
+                    
+                        prev_best_path = os.path.join(
+                                            train_config["path"]["ckpt_path"],
+                                            "{}_best.pth.tar".format(old_best_step),
+                                            )
+                                        
+                        if os.path.isfile(prev_best_path):
+                            print("Deleting prev best chkpt: " + 
+                                "{}_best.pth.tar".format(old_best_step))
+                            os.remove(prev_best_path)
+                        
                 if step == total_step:
                     quit()
                 step += 1

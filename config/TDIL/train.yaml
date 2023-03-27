@@ -3,7 +3,7 @@ path:
   log_path: "/content/drive/MyDrive/colab-data/TDIL/output/log/TDIL"
   result_path: "/content/drive/MyDrive/colab-data/TDIL/output/result/TDIL"
 optimizer:
-  batch_size: 64
+  batch_size: 16
   betas: [0.9, 0.98]
   eps: 0.000000001
   weight_decay: 0.0
@@ -15,6 +15,6 @@ optimizer:
 step:
   total_step: 900000
   log_step: 100
-  synth_step: 1000
-  val_step: 1000
-  save_step: 1000
+  synth_step: 500
+  val_step: 500
+  save_step: 500
