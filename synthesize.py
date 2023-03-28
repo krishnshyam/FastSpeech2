@@ -186,6 +186,12 @@ if __name__ == "__main__":
         default=1.0,
         help="control the speed of the whole utterance, larger value for slower speaking rate",
     )
+    parser.add_argument(
+        "--mels_only",
+        type=bool,
+        default=False,
+        help="flag for generating only mel spectrogram instead of vocoder output",
+    )
     args = parser.parse_args()
 
     # Check source texts
@@ -206,7 +212,10 @@ if __name__ == "__main__":
     model = get_model(args, configs, device, train=False)
 
     # Load vocoder
-    vocoder = get_vocoder(model_config, device)
+    if args.mels_only:
+      vocoder = None
+    else:
+      vocoder = get_vocoder(model_config, device)
 
     # Preprocess texts
     if args.mode == "batch":
@@ -218,7 +227,7 @@ if __name__ == "__main__":
             collate_fn=dataset.collate_fn,
         )
     if args.mode == "single":
-        ids = raw_texts = [args.text[:100]]
+        ids = raw_texts = [args.text[:10]]
         speakers = np.array([args.speaker_id])
         if preprocess_config["preprocessing"]["text"]["language"] == "en":
             texts = np.array([preprocess_english(args.text, preprocess_config)])
@@ -226,7 +235,6 @@ if __name__ == "__main__":
             texts = np.array([preprocess_mandarin(args.text, preprocess_config)])
         elif preprocess_config["preprocessing"]["text"]["language"] == "ta":
             texts = np.array([preprocess_indic(args.text, preprocess_config)])
-            vocoder = None
         text_lens = np.array([len(texts[0])])
         batchs = [(ids, raw_texts, speakers, texts, text_lens, max(text_lens))]
 

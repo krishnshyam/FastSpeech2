@@ -1,4 +1,5 @@
 import os
+import errno
 import json
 
 import torch
@@ -17,7 +18,23 @@ def get_model(args, configs, device, train=False):
             train_config["path"]["ckpt_path"],
             "{}.pth.tar".format(args.restore_step),
         )
-        ckpt = torch.load(ckpt_path)
+        ckpt_best_path = os.path.join(
+            train_config["path"]["ckpt_path"],
+            "{}_best.pth.tar".format(args.restore_step),
+        )
+        ckpt_latest_path = os.path.join(
+            train_config["path"]["ckpt_path"],
+            "{}_latest.pth.tar".format(args.restore_step),
+        )
+        if os.path.isfile(ckpt_path):
+          ckpt = torch.load(ckpt_path)
+        elif os.path.isfile(ckpt_latest_path):
+          ckpt = torch.load(ckpt_latest_path)
+        elif os.path.isfile(ckpt_best_path):
+          ckpt = torch.load(ckpt_best_path)
+        else:
+          raise FileNotFoundError(
+              errno.ENOENT, os.strerror(errno.ENOENT), ckpt_path)
         model.load_state_dict(ckpt["model"])
 
     if train:
